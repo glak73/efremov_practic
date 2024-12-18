@@ -44,7 +44,7 @@ class ProductController extends Controller
         $img = imagecreatefromstring(file_get_contents($request->product_image));
         $watermarkColor = imagecolorallocate($img, 255, 0, 0);
         imagestring($img, 5, 0, 0, $watermarkText, $watermarkColor);
-        imagepng($img, Storage::disk('images')->path('') . $imageName);
+        imagepng($img, Storage::disk('public')->path('') . $imageName);
         imagedestroy($img);
         $product->primary_image = $imageName;
 
@@ -75,12 +75,24 @@ class ProductController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(ProductRequest $request, string $id)
+    public function update(Request $request, string $id)
     {
         $product = Product::find($id);
         $product->title = $request->input('title');
         $product->description = $request->input('description');
+        if (isset($request->primary_image)) {
+            Storage::disk('public')->delete($product->primary_image);
+            $imageName = uniqid() . '.' . $request->primary_image->extension();
+            $watermarkText = 'ojsafngjasngj';
+            $img = imagecreatefromstring(file_get_contents($request->primary_image));
+            $watermarkColor = imagecolorallocate($img, 255, 0, 0);
+            imagestring($img, 5, 0, 0, $watermarkText, $watermarkColor);
+            imagepng($img, Storage::disk('public')->path('') . $imageName);
+            imagedestroy($img);
 
+            // Обновляем путь к изображению в записи товара
+            $product->primary_image = $imageName;
+        }
         $product->save();
         return redirect('products');
     }

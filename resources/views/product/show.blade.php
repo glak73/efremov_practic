@@ -2,7 +2,7 @@
     <div style="display: flex; width: fit-content; flex-direction: column; margin:4px; background-color:gainsboro;">
         <h2>Наименование товара: <br /> {{ $product->title }}</h2>
         <h2>Описание товара: <br /> {{ $product->description }}</h2>
-        <h2>Картинка товара: <br /> <img src="{{ asset('images/'. $product->primary_image) }}" alt="image"> </img></h2>
+        <h2>Картинка товара: <br /> <img src="{{   asset('storage/' . $product->primary_image) }}" alt="image"> </img></h2>
         <div style="width: -webkit-fill-available; display: flex; flex-direction: column;">
             <x-responsive-nav-link>
                 <form method="POST" action="{{ route('products.destroy', $product->id) }}">
