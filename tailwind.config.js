@@ -14,7 +14,32 @@ export default {
             fontFamily: {
                 sans: ['Figtree', ...defaultTheme.fontFamily.sans],
             },
+            keyframes: {
+                appear: {
+                    "0%": {
+                        opacity: "1",
+                    },
+                    '70%': {
+                        opacity: '1',
+                    },
+                    "100%": {
+                        opacity: "0",
+                        display: 'none',
+                    },
+                },
+            },
+            animation: {
+                appear: "appear 2.5s ease-in-out forwards",
+            }
+
         },
+        colors: {
+            user: '#020617',
+            admin: '#3730a3',
+            error: '#ff0000',
+            success: '#00ff00'
+        }
+
     },
 
     plugins: [forms],

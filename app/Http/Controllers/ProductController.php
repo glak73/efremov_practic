@@ -1,6 +1,8 @@
 <?php
 
 namespace App\Http\Controllers;
+
+use App\Http\Requests\ProductRequest;
 use Illuminate\Support\Facades\Storage;
 use App\Models\Product;
 use Illuminate\Http\Request;
@@ -28,7 +30,7 @@ class ProductController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(ProductRequest $request)
     {
         $product = new Product;
         $product->title = $request->input('title');
@@ -38,13 +40,13 @@ class ProductController extends Controller
         // сохраняем картинку товара и лепим водяной знак
 
         $imageName = uniqid() . '.' . $request->product_image->extension();
-        $watermarkText = 'магазин стройматериалов "стройрай"';
+        $watermarkText = 'ojsafngjasngj';
         $img = imagecreatefromstring(file_get_contents($request->product_image));
         $watermarkColor = imagecolorallocate($img, 255, 0, 0);
         imagestring($img, 5, 0, 0, $watermarkText, $watermarkColor);
-        imagepng($img, public_path('images/' . $imageName));
+        imagepng($img, Storage::disk('images')->path('') . $imageName);
         imagedestroy($img);
-        $product->primary_image = '/images/' . $imageName;
+        $product->primary_image = $imageName;
 
         $product->save();
         return redirect('products');
@@ -73,7 +75,7 @@ class ProductController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(ProductRequest $request, string $id)
     {
         $product = Product::find($id);
         $product->title = $request->input('title');
@@ -89,7 +91,7 @@ class ProductController extends Controller
     public function destroy(string $id)
     {
         $product = Product::find($id);
-        Storage::delete($product->primary_image);
+        Storage::disk('images')->delete($product['primary_image']);
         $product->delete();
         return redirect('products');
     }
